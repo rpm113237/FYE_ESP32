@@ -61,7 +61,7 @@ seqList[seq].seqdetail = "f1146,m1100,t117,b13,t120,b13,t120,b13,t19,b11,t19,b13
 "t120,b13,t120,b13,t13,b11,t116,b13,t120,b13,t117,b11,t12,b13,t120,b13,t117,b13,t17,b11,t135,b13,t11,f2146,t2300,f1146,m1100,t119,"
 "b13,t120,b13,t121,b13,t113,b11,t16,b13,t120,b13,t120,b13,t15,b11,t114,b13,t123,b11,t118,b11,t11,b13,t120,b13,t120,b13,t18,"
 "b11,t111,b13,t120,b13,f2146,t2300,";
-seqList[seq].seqcomment = "";
+seqList[seq].seqcomment = "Formerly Hair3 button";
 
 seq = 6;
 seqList[seq].seqnum = seq;
@@ -73,7 +73,7 @@ seqList[seq].seqcomment = "Formerly Shift + Face 1";
 
 seq = 7;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "nALT2 Skin 3 HPwr 4Feb15 RPM";
+seqList[seq].seqname = "ALT2 Skin 3 HPwr 4Feb15 RPM";
 seqList[seq].seqdetail = "m1100,f1146,t16,b13,t116,b11,t13,b13,t120,b13,t120,b13,t120,f2292,t2180,f1584,t14,b13,t117,b11,t14,b13,"
 "t120,b13,t120,b13,t18,b11,t133,f21168,t2180,f2236,t11,b13,t118,b11,t12,b11,t123,b13,t120,b13,f12336,t111,b13,t120,b13,t120,b13,t120,b13,t120,"
 "b13,t114,b11,t16,b13,t120,b13,t120,b13,t16,b11,t115,b13,t120,f24672,t2300,";
@@ -82,112 +82,87 @@ seqList[seq].seqcomment = "Formerly Shift + Face 2";
 
 seq = 8;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "ALT3 Hair 2 (Nogier 1-Chronic) HPwr 2Feb15";
+seqList[seq].seqdetail = "f173,m1100,t13,b13,t119,b13,t119,b11,t11,b13,t119,b13,t119,b13,t19,b11,t110,b13,t120,"
+"b13,t119,b13,t11,b11,t117,b13,t120,b13,t120,b11,t11,b13,t119,b13,t120,b13,t17,b11,t19,f272,t2300,f173,m1100,t17,b11,t120,b13,t120,b13,t120,b13,"
+"t120,b13,t112,b11,t17,b13,t19,b114,t120,b13,t14,b11,t116,b13,t120,b13,t117,b11,t12,b13,t120,b13,t120,b13,t19,b11,t15,f2146,t2300,";
+seqList[seq].seqcomment = "Formerly shift + Face 3";
 
 seq = 9;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "ALT4 Hair 3 (Nogier 2-Inflammation)2Feb15 HPwr ";
+seqList[seq].seqdetail = "f1146,m1100,t117,b13,t120,b13,t120,b13,t19,b11,t19,b13,t120,b13,t120,b13,t13,b11,"
+"t116,b13,t120,b13,t117,b11,t12,b13,t120,b13,t117,b13,t17,b11,t135,b13,t11,f2146,t2300,f1146,m1100,t119,b13,t120,b13,t121,b13,t113,b11,t16,b13,t120,"
+"b13,t120,b13,t15,b11,t114,b13,t123,b11,t118,b11,t11,b13,t120,b13,t120,b13,t18,b11,t111,b13,t120,b13,f2146,t2300,";
+seqList[seq].seqcomment = "Formerly shift pplus Hair1";
 
 seq = 10;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "ALT5 Relaxation, Feb17";
+seqList[seq].seqdetail = "f19344,t112,b15,t13,t120,b13,t120,b17,t114,b13,t120,b13,t120,b13,t120,b13,t120,b13,t112,b13, t19,b13,t120,"
+"b13,t120,b13,t120,b12,t18,b13,t121,b13,t17,f29344, t2300,f19344,t111,b11,b13,t120,b13,t120,b13,t18,b11,b13,t120,b13,t120,b13,t120,b13,t120,b13,t113,"
+"b13,t17,b13,t121,b13,t120,b13,t13,b13,t120,b12,t19,t2300";
+seqList[seq].seqcomment = "Formerly Shift + Hair2";
 
 seq = 11;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "ALT6 Wound, Feb17";
+seqList[seq].seqdetail = "f1292, t18, b13,t114,b13,t16,b13,t120,b13,t120,b14,t16, b11,t115,b13,t120,b13,t119, b11,t11,b13,t120,b13,t120,b13,"
+"b11,t111,b13,t120,b13,t120,b13,t12,b11,t131,f2292, t2300,f1292,t13,t15,b13,t116,b11,t14,b13,t120,b13,t120,b13,t17,b11,t113,b13,t120,b13,t120,b13,"
+"t121,b13,t120,b13,t113,b11,t17,b13,t120, b13,t120,b13,t11, b11,t125,b13,f2292,t2300,";
+seqList[seq].seqcomment = "Formerly Shift + Hair3";
 
 seq = 12;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "ALT7 2min 40hz Red_40 Hz IR twelve min total";
+seqList[seq].seqdetail = "f140, f240,b13, t1120, t2120,t1120, t2120,t1120, t2120,";
+seqList[seq].seqcomment = "Alzheimers test, formerly a backdoor";
 
 seq = 13;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "30000 seconds 292Hz Red";
+seqList[seq].seqdetail = "f1292,t130000,";
+seqList[seq].seqcomment = "backdoor Red test";
 
 seq = 14;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "30000 seconds 292Hz IR";
+seqList[seq].seqdetail = "f2292,t230000";
+seqList[seq].seqcomment = "Backdoor IR test";
 
 seq = 15;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "Power stepping";
+seqList[seq].seqdetail = "p1150,f1292,t130,p1160,t130,p1170, t130,p1180, t130,p1190,t130,p1200,t130,p1190,t130, p1180,t130, p1170,t130, p1160,t130, p1150,t130,";
+seqList[seq].seqcomment = "empty";
 
 seq = 16;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "empty";
+seqList[seq].seqdetail = "empty";
+seqList[seq].seqcomment = "empty";
 
 seq = 17;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "empty";
+seqList[seq].seqdetail = "empty";
+seqList[seq].seqcomment = "empty";
 
 seq = 18;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "empty";
+seqList[seq].seqdetail = "empty";
+seqList[seq].seqcomment = "empty";
 
 seq = 19;
 seqList[seq].seqnum = seq;
-seqList[seq].seqname = "";
-seqList[seq].seqdetail = "";
-seqList[seq].seqcomment = "";
+seqList[seq].seqname = "empty";
+seqList[seq].seqdetail = "empty";
+seqList[seq].seqcomment = "empty";
 
 
  
-/* const char* sequences[] = {
 
-
-"nALT2 Skin 3 HPwr 4Feb15 RPM,",
-
-"nALT3 Hair 2 (Nogier 1-Chronic) HPwr 2Feb15,f173,m1100,t13,b13,t119,b13,t119,b11,t11,b13,t119,b13,t119,b13,t19,b11,t110,b13,t120,"
-"b13,t119,b13,t11,b11,t117,b13,t120,b13,t120,b11,t11,b13,t119,b13,t120,b13,t17,b11,t19,f272,t2300,f173,m1100,t17,b11,t120,b13,t120,b13,t120,b13,"
-"t120,b13,t112,b11,t17,b13,t19,b114,t120,b13,t14,b11,t116,b13,t120,b13,t117,b11,t12,b13,t120,b13,t120,b13,t19,b11,t15,f2146,t2300,",
-
-"nALT4 Hair 3 (Nogier 2-Inflammation)2Feb15 HPwr ,f1146,m1100,t117,b13,t120,b13,t120,b13,t19,b11,t19,b13,t120,b13,t120,b13,t13,b11,"
-"t116,b13,t120,b13,t117,b11,t12,b13,t120,b13,t117,b13,t17,b11,t135,b13,t11,f2146,t2300,f1146,m1100,t119,b13,t120,b13,t121,b13,t113,b11,t16,b13,t120,"
-"b13,t120,b13,t15,b11,t114,b13,t123,b11,t118,b11,t11,b13,t120,b13,t120,b13,t18,b11,t111,b13,t120,b13,f2146,t2300,",
-
-"nALT5 Relaxation, Feb17,f19344, t112,b15,t13,t120,b13,t120,b17,t114,b13,t120,b13,t120,b13,t120,b13,t120,b13,t112,b13, t19,b13,t120,"
-"b13,t120,b13,t120,b12,t18,b13,t121,b13,t17,f29344, t2300,f19344,t111,b11,b13,t120,b13,t120,b13,t18,b11,b13,t120,b13,t120,b13,t120,b13,t120,b13,t113,"
-"b13,t17,b13,t121,b13,t120,b13,t13,b13,t120,b12,t19,t2300,",
-
-"nALT6 Wound, Feb17,  f1292, t18, b13,t114,b13,t16,b13,t120,b13,t120,b14,t16, b11,t115,b13,t120,b13,t119, b11,t11,b13,t120,b13,t120,b13,"
-"b11,t111,b13,t120,b13,t120,b13,t12,b11,t131,f2292, t2300,f1292,t13,t15,b13,t116,b11,t14,b13,t120,b13,t120,b13,t17,b11,t113,b13,t120,b13,t120,b13,"
-"t121,b13,t120,b13,t113,b11,t17,b13,t120, b13,t120,b13,t11, b11,t125,b13,f2292,t2300,",
-
-"nALT7 2min 40hz Red_40 Hz IR twelve min total,f140, f240,b13, t1120, t2120,t1120, t2120,t1120, t2120,",
-
-"n30000seconds 292Hz Red,f1292,t130000,",
-
-"n30000seconds 292Hz IR,f2292,t230000,",
-
-"nPower stepping,p1150,f1292,t130,p1160,t130,p1170, t130,p1180, t130,p1190,t130,p1200,t130,p1190,t130, p1180,t130, p1170,t130, p1160,t130, p1150,t130,",
-
-"nDocumentation string. Here goes description of sequences, etc." 
-
-};
-
- */
 
 
 

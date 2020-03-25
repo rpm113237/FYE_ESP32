@@ -111,54 +111,10 @@ void setup() {
   for (int i=0; i<NumSeqs; i++){
     Serial.printf("seq %d\t name %s \n" ,seqList[i].seqnum, seqList[i].seqname.c_str());
     Serial.printf("Detail: %s\ncomment : %s\n", seqList[i].seqdetail.c_str(), seqList[i].seqcomment.c_str());
-    Serial.printf("\n******************************************************************* \n\n");
+    Serial.printf("******************************************************************* \n\n");
     delay(1000);
   }
-  // stringxx = sequences[0];
-  // int len = stringxx.size();
-  // for (int i =0; i <len; i++){
-  //   Serial.print(stringxx[i]);
-  // }
   
-  // for (int i=0; i<2; i++) Serial.print(stringxx);
-  
-  // strcpy(buffer,strtest[1]);
-  // Serial.println(buffer);
-
-  // scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  //Serial.print("\nwarm it up with 100 read average: \t\t");
-  // Serial.println(scale.read_average(100));       // print the average of 100 readings from the ADC
-  // scale.set_scale();
-  
-  // scale.tare();                // reset the scale to 0
-  // scale.set_scale(9631.f);                      // better guess--against CAMRY; see the README for details
-  
-  Serial.println("After setting up the scale:");
-  // char txString[12];
-  // int scalerdg =0;
-//  while (1){
-////    scalerdg = (int)((scale.get_units(numSamples))*10);
-////    //scale.power_down();
-////    //digitalWrite(ledPin, LOW);
-////    itoa(scalerdg,txString,10);
-//    Serial.println(scale.get_units(10));
-//  
-//  }
-
-//  Serial.print("100 read average: \t\t");
-//  Serial.println(scale.read_average(100));       // print the average of 20 readings from the ADC
-
-  
-  
-  Serial.print("print the average of 1 slow readings after tare\t\t");
-//  scale.power_up();   //for debug
-  // Serial.println(scale.get_units(1));   // print the average of 20 readings from the ADC minus the tare weight, set with tare()
-//  scale.power_down();   //for debug
-//  digitalWrite(FastPin, HIGH);
-//  Serial.print("print the average of 10 fast readings after tare\t");
-//  Serial.println(scale.get_units(10));   // print the average of 20 readings from the ADC minus the tare weight, set with tare()
-//}
-
   // Create the BLE Device
   Serial.println("Now Set Up the BLE Device");
   BLEDevice::init("FYE LightPad (TM)"); // Give it a name
