@@ -75,6 +75,7 @@ class MyCallbacks: public BLECharacteristicCallbacks {
       if (rxValue.length() > 0) {
         Serial.println("*********");
         Serial.print("Received Value: ");
+        Serial.println(rxValue.c_str());
 
         for (int i = 0; i < rxValue.length(); i++) {
           Serial.print(rxValue[i]);
@@ -108,12 +109,12 @@ void setup() {
   Serial.println("Starting.......");
   Serial.println("can you do this??");
 
-  for (int i=0; i<NumSeqs; i++){
-    Serial.printf("seq %d\t name %s \n" ,seqList[i].seqnum, seqList[i].seqname.c_str());
-    Serial.printf("Detail: %s\ncomment : %s\n", seqList[i].seqdetail.c_str(), seqList[i].seqcomment.c_str());
-    Serial.printf("******************************************************************* \n\n");
-    delay(1000);
-  }
+  // for (int i=0; i<NumSeqs; i++){
+  //   Serial.printf("seq %d\t %s \n" ,seqList[i].seqnum, seqList[i].seqname.c_str());
+  //   Serial.printf("Detail: %s\ncomment : %s\n", seqList[i].seqdetail.c_str(), seqList[i].seqcomment.c_str());
+  //   Serial.printf("******************************************************************* \n\n");
+  //   delay(1000);
+  // }
   
   // Create the BLE Device
   Serial.println("Now Set Up the BLE Device");
@@ -150,7 +151,7 @@ void setup() {
 }
 
 void loop() {
-  char txString[12];
+  // char txString[12];    // for sending 
 
   
   if (deviceConnected) {
@@ -160,18 +161,31 @@ void loop() {
     // scalerdg = (int)((scale.get_units(numSamples))*10);
     //scale.power_down();
     //digitalWrite(ledPin, LOW);
-    itoa(scalerdg,txString,10);
+    //itoa(scalerdg,txString,10);
+
     
 //    pCharacteristic->setValue(&fakeValue, 1); // To send the integer value
 //    pCharacteristic->setValue("Hello!"); // Sending a test message
-    pCharacteristic->setValue(txString);
-        
+    // pCharacteristic->setValue(txString);
+    for (int i = 0; i <NumSeqs; i++) {
+    pCharacteristic->setValue(seqList[i].seqname.c_str());
     pCharacteristic->notify(); // Send the value to the app!
-    Serial.print("*** Sent Value: ");
-    Serial.print(txString);
+    Serial.print("*** ");
+    Serial.print(seqList[i].seqname.c_str());
     Serial.println(" ***");
-    scalerdg++;
-    delay(1000);
+    //scalerdg++;
+    delay(500);  
+    }
+
+    Serial.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
+    
+        
+    // pCharacteristic->notify(); // Send the value to the app!
+    // Serial.print("*** Sent Value: ");
+    // Serial.print(txString);
+    // Serial.println(" ***");
+    // scalerdg++;
+    // delay(1000);
 
     // You can add the rxValue checks down here instead
     // if you set "rxValue" as a global var at the top!
