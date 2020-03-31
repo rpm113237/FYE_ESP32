@@ -3,6 +3,30 @@
 #include <seq_ESP32.h> 
 
 SeqEntry seqList[NumSeqs];
+Sequence_Step REDstep, IRstep;
+
+void parse_exec_seq(int i){
+
+     for (int j = 0; j <2; j++){
+  Serial.printf("time since start (ms) = %lu\n",millis());  
+//   seqList[i].
+  string my_str = seqList[i].seqdetail;
+	vector<string> result;
+
+	stringstream s_stream(my_str); //create string stream from the string
+	
+	while(s_stream.good()){
+    string substr;
+		getline(s_stream, substr, ','); //get first string delimited by comma
+  	result.push_back(substr);
+	}
+                                }
+}      
+
+uint16_t  get_num (vector<string> seq, int i) {      //gets the num--as in fx123
+return atoi(seq.at(i).substr(2).c_str());
+    
+}
 
 void defSeq(void){
 int seq = 0;    

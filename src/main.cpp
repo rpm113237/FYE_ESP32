@@ -26,22 +26,26 @@
 This is an adaptation the squeezer project
 */
 #include <Arduino.h>
-#include <iostream>
-#include <cstring>
-using namespace std;
-#include <strings.h>
-#include<string>
+// #include <iostream>
+// #include <vector>
+// #include <sstream>
+// #include <Ticker.h>
+// #include <cstring>
+// #include<string>
 
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
-#include <BLE2902.h>
+// #include <BLEDevice.h>
+// #include <BLEServer.h>
+// #include <BLEUtils.h>
+// #include <BLE2902.h>
+
+using namespace std;
 
 #include <seq_ESP32.h>
 
 char buffer[20];
 
 extern SeqEntry seqList[NumSeqs];     //list of up to 20?
+extern Sequence_Step REDstep, IRstep;
 
 
 BLECharacteristic *pCharacteristic;
@@ -103,23 +107,17 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
   using namespace std;
-  defSeq();
+  defSeq();   //this loads up the sequences
  
   //seqList[0].seqnum
   Serial.println("Starting.......");
   Serial.println("can you do this??");
-
-  // for (int i=0; i<NumSeqs; i++){
-  //   Serial.printf("seq %d\t %s \n" ,seqList[i].seqnum, seqList[i].seqname.c_str());
-  //   Serial.printf("Detail: %s\ncomment : %s\n", seqList[i].seqdetail.c_str(), seqList[i].seqcomment.c_str());
-  //   Serial.printf("******************************************************************* \n\n");
-  //   delay(1000);
-  // }
   
   // Create the BLE Device
   Serial.println("Now Set Up the BLE Device");
   BLEDevice::init("FYE LightPad (TM)"); // Give it a name
   Serial.println("After Set up BLE Device v3");
+
   // Create the BLE Server
   BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
@@ -134,7 +132,6 @@ void setup() {
                     );
                       
   pCharacteristic->addDescriptor(new BLE2902());
-
   BLECharacteristic *pCharacteristic = pService->createCharacteristic(
                                          CHARACTERISTIC_UUID_RX,
                                          BLECharacteristic::PROPERTY_WRITE
@@ -147,12 +144,58 @@ void setup() {
 
   // Start advertising
   pServer->getAdvertising()->start();
-  Serial.println("Waiting a client connection to notify...");
+  cout << ("Waiting a client connection to notify...") << endl;
 }
 
 void loop() {
-  // char txString[12];    // for sending 
+ 
+  for (int j = 0; j <2; j++){
+  Serial.printf("time since start (ms) = %lu\n",millis());  
+  string my_str = seqList[0].seqdetail;
+	vector<string> seq_cmd;
 
+	stringstream s_stream(my_str); //create string stream from the string
+	
+	while(s_stream.good()){
+    string substr;
+		getline(s_stream, substr, ','); //get first string delimited by comma
+  	seq_cmd.push_back(substr);
+	}
+ 
+	
+	for(int i = 0; i<seq_cmd.size(); i++){ //print all splitted strings
+    if(seq_cmd.at(i).size() >0){
+      if(seq_cmd.at(i)[0]=='p'){
+         cout<< "It is a power cmd "<<endl;
+          if (seq_cmd.at(i)[1] == RED) REDstep.step_power = atoi(seq_cmd.at(i).substr(2).c_str());
+          else if (seq_cmd.at(i)[1] == '2') IRstep.step_power = atoi(seq_cmd.at(i).substr(2).c_str());
+          
+          else cout<< "Unknown frequency: "<< seq_cmd.at(i)[1] <<endl;
+
+         }
+         if(seq_cmd.at(i)[0]=='f'){         
+         uint16_t num = get_num (seq_cmd, i);
+         cout<< "It is a freq cmd; freq =  "<< num<<endl;
+
+          if (seq_cmd.at(i)[1] == '1') REDstep.step_freq = num;
+          else if (seq_cmd.at(i)[1] == '2') IRstep.step_freq = num;
+          else cout<< "Unknown color: "<< seq_cmd.at(i)[1] <<endl;
+
+         }
+      cout << "Cmd type: " << seq_cmd.at(i)[0]<< "\t";
+      cout << "Freq Num: " << seq_cmd.at(i)[1] <<"\t"<< "Value: "<<seq_cmd.at(i).substr(2)<<endl;
+      int ii = atoi(seq_cmd.at(i).substr(2).c_str()); cout << "integer version: " << ii <<endl;
+      // cout << "Freq: " << seq_cmd.at(i).substr(2) <<endl;
+    }
+
+    
+		// cout << seq_cmd.at(i) << endl; 
+	}
+
+  delay(2000);
+
+  }
+while(1);
   
   if (deviceConnected) {
     
