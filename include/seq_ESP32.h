@@ -50,24 +50,30 @@ using namespace std;
 #define NumSeqs 20      //max number of sequences
 
 void defSeq(void);
-void parse_exec_seq(int i);
+void parse_exec_seq(int step_no, int seq_step );
+
 uint16_t  get_num (vector<string> seq, int i);  //
+uint16_t  get_clr (vector<string> seq, int i);
 
-enum COLOR {RED= 1, IR};
+// uint16_t numbersequences;     // calculated
 
-struct Sequence_Step
+enum colors{RED= 1, IR};
+
+
+
+struct Stage_Spec
 {
     uint16_t step_secs;         //time for profile step; up to 32K secs
     uint8_t step_power;         //power 0-255
                                 //default 255
     uint16_t step_freq;          //freq 0-10000
                                 //default 292
-    COLOR step_color;                            
+    colors step_color;          //RED or IR                      
     unsigned int blink_freq;    //blink rate blinks per sec
                                 //default 4 (4/sec); max = MAXBLINKTIME
     unsigned int blink_ON;      //milliseconds for blink to be ON
                                 //default 100 (100 ms)
-    //unsigned int blink_pwr;     //same as power; default 255
+    //unsigned int blink_pwr;   //same as power; default 255
     unsigned int bsecs;         //seconds to be blinking
     // unsigned int prescale;      //prescale for ith freq
     // enum profile_states pstate;  //pstate values

@@ -3,44 +3,126 @@
 #include <seq_ESP32.h> 
 
 SeqEntry seqList[NumSeqs];
-Sequence_Step REDstep, IRstep;
+Stage_Spec seq_step[2];
+unsigned int numbersequences;
 
-void parse_exec_seq(int i){
 
-     for (int j = 0; j <2; j++){
-  Serial.printf("time since start (ms) = %lu\n",millis());  
-//   seqList[i].
-  string my_str = seqList[i].seqdetail;
-	vector<string> result;
+void parse_exec_seq(int seq_Num, int seq_step ){    //TODO fix this.  Needs to load Seq up with RED/IR
+//return step number--unless end--returns 0??
 
+  /*
+parses seqList(seq_Num) starting at step_no.  The "action tags" are 
+tnx and bnx--where  n is the color and x is the time.
+when a "t" or "b" is found, the Seq_Spec struc seq_step[] is loaded with type (blink or run)
+color (RED or IR) and time (seconds); parse_exec_seq exits with Color as return.
+If end of sequennce, exits with OX00.  No color means end
+
+
+  */
+
+//  for (int j = 0; j <=numbersequences; j++){ 
+  // Serial.printf("\n\ntime since start (ms) = %lu\n",millis());  
+  // cout << "sequence number  = "<<j << " name = "<<seqList[j].seqname <<endl;
+  // string my_str = seqList[j].seqdetail;
+  // my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
+
+  char tst_chr;
+	string my_str = seqList[seq_Num].seqdetail;
+  my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
+  vector<string> seq_cmd;
 	stringstream s_stream(my_str); //create string stream from the string
 	
 	while(s_stream.good()){
     string substr;
-		getline(s_stream, substr, ','); //get first string delimited by comma
-  	result.push_back(substr);
+		getline(s_stream, substr, ','); 
+  	seq_cmd.push_back(substr);
 	}
-                                }
-}      
+ 
+ // seq_cmd is a vector of strings--each of which is a command
+ //we are going to start with the seq_step entry
+	
+
+    if(seq_cmd.at(seq_step).size() >0){     //avoid problems with a null sequence (,, or trailing comma)
+      uint16_t freq = get_num (seq_cmd, seq_step);
+      uint16_t sclr = get_clr (seq_cmd, seq_step);
+      tst_chr = tolower(seq_cmd.at(seq_step)[0]);
+      cout << "The command is = "  <<tst_chr << endl;
+      switch (tst_chr) {
+
+        case 'p':
+          cout<< "It is a power cmd; power =  "<< freq << " color = " << sclr<< endl;
+          if (sclr >0)
+          break;
+        default:
+          cout <<"not legal " << tst_chr << endl;
+          break; 
+
+
+                      }
+    //   if(seq_cmd.at(seq_step)[0]=='p'){
+    //       cout<< "It is a power cmd; power =  "<< freq << " color = " << sclr<< endl;
+    //       if (sclr == RED) REDstep.step_power = freq;
+    //       else if (sclr == IR) IRstep.step_power = freq;          
+    //       else cout<< "Unknown Color: "<< seq_cmd.at(seq_step)[1] <<endl;
+
+    //      }
+    //      if(seq_cmd.at(seq_step)[0]=='f'){     
+
+          
+    //      cout<< "It is a freq cmd; freq =  "<< freq << " color = " << sclr<< endl;
+
+    //       if (sclr == RED) REDstep.step_freq = freq;
+    //       else if (sclr == IR) IRstep.step_freq = freq;
+    //       else cout<< "Unknown color: "<< seq_cmd.at(seq_step) <<endl;
+    //       cout << "RED freq = " << REDstep.step_freq << " IR freq = " << IRstep.step_freq << endl;
+
+    //      }
+      
+    // }
+
+  // return seq_step
+  // rest in structure    
+		
+	
+
+  // delay(2000);
+
+  
+
+                              }   
+}                               
 
 uint16_t  get_num (vector<string> seq, int i) {      //gets the num--as in fx123
 return atoi(seq.at(i).substr(2).c_str());
     
 }
+uint16_t  get_clr (vector<string> seq, int i) {      //gets the colornum--as in fx123
+if ((seq.at(i)[1])=='1') return RED;
+else if (seq.at(i)[1]=='2') return IR;
+else  {
+    cout <<"unknown color: "<< seq.at(i) << endl;
+    return -1;
+        }
+    
+}
+
+ 
 
 void defSeq(void){
-int seq = 0;    
+    
 // SeqEntry seqList[NumSeqs];
 
 // seqList[seq].seqnum = seq;
 // seqList[seq].seqcomment ="hello";
-seqList[0].seqname = "Face 1(facial two)";
-seqList[0].seqdetail = "f1292,m1100,t120,b13,t120,b13,t120,b13,t120,b13,t114,b11,t17,b13,t121,b13,t119,b13,"  
+int seq = 0;
+seqList[seq].seqnum = seq;
+seqList[seq].seqname = "Face 1(facial two)";
+seqList[seq].seqdetail = "f1292,m1100,t120,b13,t120,b13,t120,b13,t120,b13,t114,b11,t17,b13,t121,b13,t119,b13,"  
 "t13,b11,t116,b13,t120,b13,t117,b11,t12,b13,t121,b13,t13,f2292,t260,f1292,m1100,t16,b11,t143,b13,t122,b13,t111,b11,t16,b13,t120,b13,t120,b13,t15,b11,t115,"
 "b13,t120,b13,t118,b11,t124,b13,t12,f2292,t260,f1292,m1100,t128,b13,t120,b13,t110,b13,t124,b11,t15,b13,t120,b13,t120,b13,t15,b11,t115,b13,t120,b13,t119,"
 "b11,t11,b13,t120,b13,f2292,t260,f1292,m1100,t129,b13,t11,b11,t118,b13,t120,b13,t115,b11,t15,b13,t110,b13,t120,b13,t15,b11,t114,b13,t120,b13,t120,b13,"
 "t120,b13,f2292,t260,";
-seqList[0].seqcomment = "This is sequence zero--used to be Face 1 button";
+seqList[seq].seqcomment = "This is sequence zero--used to be Face 1 button";
 
 seq = 1;
 seqList[seq].seqnum = seq;
@@ -184,7 +266,7 @@ seqList[seq].seqname = "empty";
 seqList[seq].seqdetail = "empty";
 seqList[seq].seqcomment = "empty";
 
-
+numbersequences = seq;
  
 
 
