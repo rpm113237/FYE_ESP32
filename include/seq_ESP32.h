@@ -50,14 +50,15 @@ using namespace std;
 #define NumSeqs 20      //max number of sequences
 
 void defSeq(void);
-void parse_exec_seq(int step_no, int seq_step );
+int parse_exec_seq(int step_no, int seq_step );   //returns new seq_step
+void out_p_ret(void);
 
-uint16_t  get_num (vector<string> seq, int i);  //
-uint16_t  get_clr (vector<string> seq, int i);
+int16_t  get_num (vector<string> seq, int i);  //
+int16_t  get_clr (vector<string> seq, int i);
 
 // uint16_t numbersequences;     // calculated
 
-enum colors{RED= 1, IR};
+enum colors{RED= 0, IR=1};  //because [] starts at zero.
 
 
 
@@ -71,7 +72,7 @@ struct Stage_Spec
     colors step_color;          //RED or IR                      
     unsigned int blink_freq;    //blink rate blinks per sec
                                 //default 4 (4/sec); max = MAXBLINKTIME
-    unsigned int blink_ON;      //milliseconds for blink to be ON
+    unsigned int blink_ms;      //milliseconds for blink to be ON
                                 //default 100 (100 ms)
     //unsigned int blink_pwr;   //same as power; default 255
     unsigned int bsecs;         //seconds to be blinking
@@ -89,6 +90,12 @@ struct SeqEntry {
   std::string seqcomment;  //any comment
   };
 
+struct Parse_Return{
+  uint out_time;
+  uint out_freq;   //frequency for output
+  int out_color;  //RED or IR
+  bool is_blink;  //True is blink.
+};
 
 #endif	/* SEQUENCES_H */
 

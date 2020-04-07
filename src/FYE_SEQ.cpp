@@ -4,11 +4,12 @@
 
 SeqEntry seqList[NumSeqs];
 Stage_Spec seq_step[2];
+Parse_Return p_ret;
 unsigned int numbersequences;
 
 
-void parse_exec_seq(int seq_Num, int seq_step ){    //TODO fix this.  Needs to load Seq up with RED/IR
-//return step number--unless end--returns 0??
+int parse_exec_seq(int seq_Num, int seq_step_num ){    //TODO fix this.  Needs to load Seq up with RED/IR
+//return step number--unless end--returns 0
 
   /*
 parses seqList(seq_Num) starting at step_no.  The "action tags" are 
@@ -25,78 +26,108 @@ If end of sequennce, exits with OX00.  No color means end
   // cout << "sequence number  = "<<j << " name = "<<seqList[j].seqname <<endl;
   // string my_str = seqList[j].seqdetail;
   // my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
+  
 
   char tst_chr;
+  int retval=-1;
 	string my_str = seqList[seq_Num].seqdetail;
   my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
   vector<string> seq_cmd;
 	stringstream s_stream(my_str); //create string stream from the string
 	
-	while(s_stream.good()){
+	while(s_stream.good()){   //vectorize the sequence selected (seq_Num)
     string substr;
 		getline(s_stream, substr, ','); 
   	seq_cmd.push_back(substr);
 	}
  
+ cout<<"how many entries in vector?  "<<seq_cmd.size() << endl;
+
  // seq_cmd is a vector of strings--each of which is a command
  //we are going to start with the seq_step entry
-	
-
-    if(seq_cmd.at(seq_step).size() >0){     //avoid problems with a null sequence (,, or trailing comma)
-      uint16_t freq = get_num (seq_cmd, seq_step);
-      uint16_t sclr = get_clr (seq_cmd, seq_step);
-      tst_chr = tolower(seq_cmd.at(seq_step)[0]);
-      cout << "The command is = "  <<tst_chr << endl;
+retval = -1;     //stay until we get an exit cmd (b or t)
+while ((retval<0) && (seq_step_num < seq_cmd.size())){
+    if (seq_cmd.at(seq_step_num).size() <=0) retval = 0;    //should be end of string
+    if(seq_cmd.at(seq_step_num).size() >0){     //avoid problems with a null sequence (,, or trailing comma)
+      cout <<"\nseq_cmd = "<<seq_cmd.at(seq_step_num) <<"\tseq step num = "<<seq_step_num<<endl;
+      uint16_t param = get_num (seq_cmd, seq_step_num);     //returns zero if bad freq or num      
+      int16_t sclr = get_clr (seq_cmd, seq_step_num);    //returns neg if bad color; otherwise 0= RED; 1 = IR
+      tst_chr = 'x';  //default invalid
+      if ((param >0) & (sclr>=0)) tst_chr = tolower(seq_cmd.at(seq_step_num)[0]);  //valid freq and color
+      seq_step_num++;
+      cout << "cmd = "  << tst_chr << "\tparam = "  << param << "\tcolor = "  << sclr << endl;
       switch (tst_chr) {
 
-        case 'p':
-          cout<< "It is a power cmd; power =  "<< freq << " color = " << sclr<< endl;
-          if (sclr >0)
+        case 'f':
+          // cout<< "freq set cmd; freq =  "<< param << " color = " << sclr<< endl;
+          seq_step[sclr].step_freq = param;          
           break;
+
+        case 'p':
+          // cout<< "It is a power cmd; power =  "<< param << " color = " << sclr<< endl;
+          seq_step[sclr].step_power = param;          
+          break;
+
+        case 'm':
+          // cout<< "Blink time in ms =  "<< param << " color = " << sclr<< endl;
+          seq_step[sclr].blink_ms = param;          
+          break;  
+
+        case 'b':
+        case 't':
+          // cout<< "It is a time cmd; time =  "<< param << " secs; color = " << sclr<< endl;
+          seq_step[sclr].step_secs = param;  //// redundant--in p_ret struct???
+          p_ret.is_blink = false;
+          if (tst_chr == 'b'){
+           p_ret.is_blink = true;
+           p_ret.out_freq = 0 ;     //blink defined by "m"
+          } 
+          p_ret.out_time = param;
+          p_ret.out_color = sclr;
+          p_ret.out_freq = param;  
+          out_p_ret();
+          retval = seq_step_num;  //been incremented
+          break;  
+
         default:
           cout <<"not legal " << tst_chr << endl;
+          retval = seq_step_num;
           break; 
 
 
-                      }
-    //   if(seq_cmd.at(seq_step)[0]=='p'){
-    //       cout<< "It is a power cmd; power =  "<< freq << " color = " << sclr<< endl;
-    //       if (sclr == RED) REDstep.step_power = freq;
-    //       else if (sclr == IR) IRstep.step_power = freq;          
-    //       else cout<< "Unknown Color: "<< seq_cmd.at(seq_step)[1] <<endl;
-
-    //      }
-    //      if(seq_cmd.at(seq_step)[0]=='f'){     
-
-          
-    //      cout<< "It is a freq cmd; freq =  "<< freq << " color = " << sclr<< endl;
-
-    //       if (sclr == RED) REDstep.step_freq = freq;
-    //       else if (sclr == IR) IRstep.step_freq = freq;
-    //       else cout<< "Unknown color: "<< seq_cmd.at(seq_step) <<endl;
-    //       cout << "RED freq = " << REDstep.step_freq << " IR freq = " << IRstep.step_freq << endl;
-
-    //      }
-      
-    // }
-
-  // return seq_step
-  // rest in structure    
+                      } //end switch
+    
 		
-	
+                                      } // end >0 if
 
-  // delay(2000);
+  delay(100);
 
-  
+} //end while (retval<0)
 
-                              }   
-}                               
+// while(1);
+// cout <<"retval = " << retval <<endl;
+  return retval;
 
-uint16_t  get_num (vector<string> seq, int i) {      //gets the num--as in fx123
-return atoi(seq.at(i).substr(2).c_str());
+                                 
+}    
+
+void out_p_ret(void){   //debug utility to output details
+
+cout <<"Step spec summary: is it a blink?  " <<p_ret.is_blink;
+cout <<"\t time = " << p_ret.out_time;
+cout << "\t color  = "<< p_ret.out_color;
+cout << "\t frequency = " << p_ret.out_freq << endl;
+
+
+
+
+}
+
+int16_t  get_num (vector<string> seq, int i) {      //gets the num--as in fx123
+return atoi(seq.at(i).substr(2).c_str());           //returns zero if invalid
     
 }
-uint16_t  get_clr (vector<string> seq, int i) {      //gets the colornum--as in fx123
+int16_t  get_clr (vector<string> seq, int i) {      //gets the colornum--as in fx123
 if ((seq.at(i)[1])=='1') return RED;
 else if (seq.at(i)[1]=='2') return IR;
 else  {
