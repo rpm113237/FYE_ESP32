@@ -45,7 +45,8 @@ using namespace std;
 char buffer[20];
 
 extern SeqEntry seqList[NumSeqs];     //list of up to 20?
-extern Sequence_Step REDstep, IRstep;
+extern Stage_Spec seq_step[2];    //[0] is RED; [1] is IR
+extern uint16_t numbersequences;
 
 
 BLECharacteristic *pCharacteristic;
@@ -148,53 +149,56 @@ void setup() {
 }
 
 void loop() {
- 
-  for (int j = 0; j <2; j++){
-  Serial.printf("time since start (ms) = %lu\n",millis());  
-  string my_str = seqList[0].seqdetail;
-	vector<string> seq_cmd;
+ parse_exec_seq(1,2);
+//   for (int j = 0; j <=numbersequences; j++){ 
+//   Serial.printf("\n\ntime since start (ms) = %lu\n",millis());  
+//   cout << "sequence number  = "<<j << " name = "<<seqList[j].seqname <<endl;
+//   string my_str = seqList[j].seqdetail;
+//   my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
+// 	vector<string> seq_cmd;
 
-	stringstream s_stream(my_str); //create string stream from the string
+// 	stringstream s_stream(my_str); //create string stream from the string
 	
-	while(s_stream.good()){
-    string substr;
-		getline(s_stream, substr, ','); //get first string delimited by comma
-  	seq_cmd.push_back(substr);
-	}
+// 	while(s_stream.good()){
+//     string substr;
+// 		getline(s_stream, substr, ','); //get first string delimited by comma
+//   	seq_cmd.push_back(substr);
+// 	}
  
 	
-	for(int i = 0; i<seq_cmd.size(); i++){ //print all splitted strings
-    if(seq_cmd.at(i).size() >0){
-      if(seq_cmd.at(i)[0]=='p'){
-         cout<< "It is a power cmd "<<endl;
-          if (seq_cmd.at(i)[1] == RED) REDstep.step_power = atoi(seq_cmd.at(i).substr(2).c_str());
-          else if (seq_cmd.at(i)[1] == '2') IRstep.step_power = atoi(seq_cmd.at(i).substr(2).c_str());
+// 	for(int i = 0; i<seq_cmd.size(); i++){ //print all splitted strings
+//     if(seq_cmd.at(i).size() >0){    //avoid problems with a null sequence (,, or trailing comma)
+//       uint16_t freq = get_num (seq_cmd, i);
+//       uint16_t sclr = get_clr (seq_cmd, i);
+//       //FIXME: change freq to num for clarity 
+//       if(seq_cmd.at(i)[0]=='p'){
+//           cout<< "It is a power cmd; power =  "<< freq << " color = " << sclr<< endl;
+//           if (sclr == RED) REDstep.step_power = freq;
+//           else if (sclr == IR) IRstep.step_power = freq;          
+//           else cout<< "Unknown Color: "<< seq_cmd.at(i)[1] <<endl;
+
+//          }
+//          if(seq_cmd.at(i)[0]=='f'){     
+
           
-          else cout<< "Unknown frequency: "<< seq_cmd.at(i)[1] <<endl;
+//          cout<< "It is a freq cmd; freq =  "<< freq << " color = " << sclr<< endl;
 
-         }
-         if(seq_cmd.at(i)[0]=='f'){         
-         uint16_t num = get_num (seq_cmd, i);
-         cout<< "It is a freq cmd; freq =  "<< num<<endl;
+//           if (sclr == RED) REDstep.step_freq = freq;
+//           else if (sclr == IR) IRstep.step_freq = freq;
+//           else cout<< "Unknown color: "<< seq_cmd.at(i)[1] <<endl;
+//           cout << "RED freq = " << REDstep.step_freq << " IR freq = " << IRstep.step_freq << endl;
 
-          if (seq_cmd.at(i)[1] == '1') REDstep.step_freq = num;
-          else if (seq_cmd.at(i)[1] == '2') IRstep.step_freq = num;
-          else cout<< "Unknown color: "<< seq_cmd.at(i)[1] <<endl;
-
-         }
-      cout << "Cmd type: " << seq_cmd.at(i)[0]<< "\t";
-      cout << "Freq Num: " << seq_cmd.at(i)[1] <<"\t"<< "Value: "<<seq_cmd.at(i).substr(2)<<endl;
-      int ii = atoi(seq_cmd.at(i).substr(2).c_str()); cout << "integer version: " << ii <<endl;
-      // cout << "Freq: " << seq_cmd.at(i).substr(2) <<endl;
-    }
+//          }
+      
+//     }
 
     
-		// cout << seq_cmd.at(i) << endl; 
-	}
+		
+// 	}
 
-  delay(2000);
+//   // delay(2000);
 
-  }
+//   }
 while(1);
   
   if (deviceConnected) {
