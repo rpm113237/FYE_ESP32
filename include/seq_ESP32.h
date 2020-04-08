@@ -52,6 +52,7 @@ using namespace std;
 void defSeq(void);
 int parse_exec_seq(int step_no, int seq_step );   //returns new seq_step
 void out_p_ret(void);
+void init_default_profile();
 
 int16_t  get_num (vector<string> seq, int i);  //
 int16_t  get_clr (vector<string> seq, int i);
@@ -69,8 +70,8 @@ struct Stage_Spec
                                 //default 255
     uint16_t step_freq;          //freq 0-10000
                                 //default 292
-    colors step_color;          //RED or IR                      
-    unsigned int blink_freq;    //blink rate blinks per sec
+    // colors step_color;          //RED or IR                      
+    unsigned int blink_rate;    //blink rate blinks per sec
                                 //default 4 (4/sec); max = MAXBLINKTIME
     unsigned int blink_ms;      //milliseconds for blink to be ON
                                 //default 100 (100 ms)

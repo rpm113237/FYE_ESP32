@@ -41,21 +41,27 @@ If end of sequennce, exits with OX00.  No color means end
   	seq_cmd.push_back(substr);
 	}
  
- cout<<"how many entries in vector?  "<<seq_cmd.size() << endl;
+//  cout<<"how many entries in vector seq_Num?  "<<seq_Num << "  "<<seq_cmd.size() << endl;
 
  // seq_cmd is a vector of strings--each of which is a command
  //we are going to start with the seq_step entry
 retval = -1;     //stay until we get an exit cmd (b or t)
-while ((retval<0) && (seq_step_num < seq_cmd.size())){
-    if (seq_cmd.at(seq_step_num).size() <=0) retval = 0;    //should be end of string
-    if(seq_cmd.at(seq_step_num).size() >0){     //avoid problems with a null sequence (,, or trailing comma)
-      cout <<"\nseq_cmd = "<<seq_cmd.at(seq_step_num) <<"\tseq step num = "<<seq_step_num<<endl;
+if(seq_step_num<0) seq_step_num = 0; //first call is -1
+
+//if we exit at end; return 0; if we exit on t or b, return next step_seq_num
+
+while (retval<0) {  //TODO figure out return here.
+    if (seq_step_num >= seq_cmd.size()) return 0; //overflow
+    if (seq_cmd.at(seq_step_num).size() <=0) return 0;    //in case of null at end of string
+    
+    
+      // cout <<"\nseq_cmd = "<<seq_cmd.at(seq_step_num) <<"\tseq step num = "<<seq_step_num<<endl;
       uint16_t param = get_num (seq_cmd, seq_step_num);     //returns zero if bad freq or num      
       int16_t sclr = get_clr (seq_cmd, seq_step_num);    //returns neg if bad color; otherwise 0= RED; 1 = IR
       tst_chr = 'x';  //default invalid
       if ((param >0) & (sclr>=0)) tst_chr = tolower(seq_cmd.at(seq_step_num)[0]);  //valid freq and color
       seq_step_num++;
-      cout << "cmd = "  << tst_chr << "\tparam = "  << param << "\tcolor = "  << sclr << endl;
+      // cout << "cmd = "  << tst_chr << "\tparam = "  << param << "\tcolor = "  << sclr << endl;
       switch (tst_chr) {
 
         case 'f':
@@ -74,19 +80,22 @@ while ((retval<0) && (seq_step_num < seq_cmd.size())){
           break;  
 
         case 'b':
+          seq_step[sclr].bsecs = param;
+          p_ret.out_time = param;   //TODO redundant to above 
+          p_ret.is_blink = true;
+          p_ret.out_color = sclr;
+          p_ret.out_freq = seq_step[sclr].step_freq;
+          return seq_step_num;
+          break;  //never hits
+
         case 't':
           // cout<< "It is a time cmd; time =  "<< param << " secs; color = " << sclr<< endl;
-          seq_step[sclr].step_secs = param;  //// redundant--in p_ret struct???
+          seq_step[sclr].step_secs = param;
+          p_ret.out_time = param;   //TODO redundant to above 
           p_ret.is_blink = false;
-          if (tst_chr == 'b'){
-           p_ret.is_blink = true;
-           p_ret.out_freq = 0 ;     //blink defined by "m"
-          } 
-          p_ret.out_time = param;
           p_ret.out_color = sclr;
-          p_ret.out_freq = param;  
-          out_p_ret();
-          retval = seq_step_num;  //been incremented
+          p_ret.out_freq = seq_step[sclr].step_freq;
+          return seq_step_num;          
           break;  
 
         default:
@@ -98,9 +107,9 @@ while ((retval<0) && (seq_step_num < seq_cmd.size())){
                       } //end switch
     
 		
-                                      } // end >0 if
+                                      
 
-  delay(100);
+  // delay(100);
 
 } //end while (retval<0)
 
@@ -113,15 +122,14 @@ while ((retval<0) && (seq_step_num < seq_cmd.size())){
 
 void out_p_ret(void){   //debug utility to output details
 
-cout <<"Step spec summary: is it a blink?  " <<p_ret.is_blink;
-cout <<"\t time = " << p_ret.out_time;
-cout << "\t color  = "<< p_ret.out_color;
-cout << "\t frequency = " << p_ret.out_freq << endl;
-
-
-
-
-}
+cout <<"Step summary:";
+if (p_ret.is_blink) cout << "\tBlink: YES";
+if (!p_ret.is_blink) cout << "\tBlink: NO";
+if (p_ret.out_color==RED) cout<< "\tColor: RED";
+if (p_ret.out_color==IR) cout <<"\tColor: IR";
+cout << "\t freq = " << p_ret.out_freq;
+cout <<"\t time = " << p_ret.out_time<<endl;
+                  }
 
 int16_t  get_num (vector<string> seq, int i) {      //gets the num--as in fx123
 return atoi(seq.at(i).substr(2).c_str());           //returns zero if invalid
@@ -137,6 +145,31 @@ else  {
     
 }
 
+void init_default_profile() {
+    //initialize profiles to defaults
+    
+    //If power settings in NVM (progMem) is FFFF, load profiles with defaults
+    
+    seq_step[IR].step_secs    =   10;  //for debug; ten secs
+    seq_step[IR].blink_rate   =   4;    //4Hz
+    seq_step[IR].blink_ms     =   100;  //100ms
+    seq_step[IR].bsecs        =   10;   //default blink time
+    seq_step[IR].step_power   =   200; 
+    seq_step[IR].step_freq    =   292;
+
+    seq_step[RED].step_secs    =   10;  //for debug; ten secs
+    seq_step[RED].blink_rate   =   4;    //4Hz
+    seq_step[RED].blink_ms     =   100;  //100ms
+    seq_step[RED].bsecs        =   10;   //default blink time
+    seq_step[RED].step_power   =   200; 
+    seq_step[RED].step_freq    =   173;
+
+    ledcWrite()
+    
+    //TODO Fix Power Up power intiation
+    // PowerInit(0);          //this Initializes to Defaults if first time, otherwise reads from PGM Mem
+
+}
  
 
 void defSeq(void){
@@ -276,32 +309,28 @@ seqList[seq].seqcomment = "empty";
 seq = 16;
 seqList[seq].seqnum = seq;
 seqList[seq].seqname = "0123456789abcdefghijklmnopqrstuv";
-seqList[seq].seqdetail = "empty";
+seqList[seq].seqdetail = "";
 seqList[seq].seqcomment = "empty";
 
 seq = 17;
 seqList[seq].seqnum = seq;
 seqList[seq].seqname = "empty";
-seqList[seq].seqdetail = "empty";
+seqList[seq].seqdetail = "";
 seqList[seq].seqcomment = "empty";
 
 seq = 18;
 seqList[seq].seqnum = seq;
 seqList[seq].seqname = "empty";
-seqList[seq].seqdetail = "empty";
+seqList[seq].seqdetail = "";
 seqList[seq].seqcomment = "empty";
 
 seq = 19;
 seqList[seq].seqnum = seq;
 seqList[seq].seqname = "empty";
-seqList[seq].seqdetail = "empty";
+seqList[seq].seqdetail = "";
 seqList[seq].seqcomment = "empty";
 
 numbersequences = seq;
- 
-
-
-
 
 }
 

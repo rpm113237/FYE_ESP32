@@ -113,7 +113,7 @@ void setup() {
  
   //seqList[0].seqnum
   Serial.println("Starting.......");
-  Serial.println("can you do this??");
+  
   
   // Create the BLE Device
   Serial.println("Now Set Up the BLE Device");
@@ -150,18 +150,30 @@ void setup() {
 }
 
 void loop() {
-int seq_j = 0;
-seq_j = parse_exec_seq(1,seq_j);
- while (seq_j >0)
+int seq_n = 0, step_n =0 ;    //debug, run through them all, see if blows up
+int nloops = numbersequences;
+nloops = 2;
+for (seq_n = 1; seq_n< nloops; seq_n++){
+step_n = -1;    //fake out first time
+cout<<"time since start (ms) = " <<millis();
+cout <<"\tseq num ="<<seq_n<<"\tseq name: " << seqList[seq_n].seqname<<endl;
+
+ while ((step_n >0)||(step_n < 0))    //step_n = -1 is first time, set to zero in parse_exec_seq
  {
-   seq_j = parse_exec_seq(2,seq_j); //returns zero if finished
+  // cout<<"\ntime since start (ms) = " <<millis();
+  // cout <<"\tsequence num ="<<seq_n<<"seq name" << seqList[seq_n].seqname<<endl;
+  step_n = parse_exec_seq(seq_n,step_n); //returns 0 if finished
+  out_p_ret();
+  delay(p_ret.out_time*100);
  }
- cout << "exit\n";
+ 
+//  delay(5000);
+} //END DEBUG WHILE
  while (1);
 // delay(2000);
 
 //   }
-while(1);
+while(1);  //debug hang up
   
   if (deviceConnected) {
     
@@ -185,8 +197,8 @@ while(1);
     //scalerdg++;
     delay(500);  
     }
-
-    Serial.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
+    cout<<"\n\ntime since start (ms) = " <<millis();
+    cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n";
     
         
     // pCharacteristic->notify(); // Send the value to the app!
