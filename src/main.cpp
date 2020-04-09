@@ -41,6 +41,34 @@ This is an adaptation the squeezer project
 using namespace std;
 
 #include <seq_ESP32.h>
+#define LED 2   //On Boaard LED
+#define PWR_DAC1 25   //two dacs, GPIO25 and GPIO26
+#define PWR_DAC0 26   //two dacs, GPIO25 and GPIO26
+#define IR_sel   19   //selects IR
+#define RED_sel  21   //selects RED
+#define LED_out_pin   18   //selects channel for PWM out
+#define LEDChannel  0 //use PWM Channel 0
+
+int LEDfreq = 10, LEDres = 8;   //TODO for debug
+
+void setup_LED_io(void)
+{
+  pinMode (IR_sel, OUTPUT);
+  pinMode (RED_sel, OUTPUT);
+  pinMode (LED_out_pin, OUTPUT);
+  ledcAttachPin(LED_out_pin, LEDChannel);
+
+
+
+  // ledcSetup(LEDChannel, LEDfreq, LEDres);
+  // ledcAttachPin(LED, LEDChannel);
+
+}
+
+
+// const int LEDfreq = 40;
+// const int LEDChannel = 0;
+// const int LEDres = 8; //Resolution 8, 10, 12, 15
 
 char buffer[20];
 
@@ -113,6 +141,11 @@ void setup() {
  
   //seqList[0].seqnum
   Serial.println("Starting.......");
+  pinMode (LED, OUTPUT);
+
+  
+  ledcSetup(LEDChannel, LEDfreq, LEDres);
+  ledcAttachPin(LED, LEDChannel);
   
   
   // Create the BLE Device
@@ -153,6 +186,21 @@ void loop() {
 int seq_n = 0, step_n =0 ;    //debug, run through them all, see if blows up
 int nloops = numbersequences;
 nloops = 2;
+
+ledcWrite(LEDChannel, 102);
+while (1){
+  LEDfreq = 10;
+  for (int id = 0; id<=255; id++){
+    LEDfreq = 10 + id * 20; 
+    cout<< "freq: " << LEDfreq << " DAC = "<< id <<endl;
+    ledcSetup(LEDChannel, LEDfreq, LEDres);
+    ledcWrite(LEDChannel, 127);
+    dacWrite(DAC1, id);
+    delay(100);
+  }
+
+}
+
 for (seq_n = 1; seq_n< nloops; seq_n++){
 step_n = -1;    //fake out first time
 cout<<"time since start (ms) = " <<millis();

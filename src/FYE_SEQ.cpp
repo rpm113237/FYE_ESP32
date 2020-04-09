@@ -120,8 +120,11 @@ while (retval<0) {  //TODO figure out return here.
                                  
 }    
 
-void out_p_ret(void){   //debug utility to output details
+long int LEDout(void){
+  
+}
 
+void out_p_ret(void){   //debug utility to output details
 cout <<"Step summary:";
 if (p_ret.is_blink) cout << "\tBlink: YES";
 if (!p_ret.is_blink) cout << "\tBlink: NO";
@@ -164,8 +167,7 @@ void init_default_profile() {
     seq_step[RED].step_power   =   200; 
     seq_step[RED].step_freq    =   173;
 
-    ledcWrite()
-    
+     
     //TODO Fix Power Up power intiation
     // PowerInit(0);          //this Initializes to Defaults if first time, otherwise reads from PGM Mem
 
