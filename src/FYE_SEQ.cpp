@@ -5,7 +5,17 @@
 SeqEntry seqList[NumSeqs];
 Stage_Spec seq_step[2];
 Parse_Return p_ret;
-unsigned int numbersequences;
+
+// Ticker timer1(printMessage, 0, 1);
+// Ticker task_parse(seq_exec, 1000, MILLIS);    //interval will be change
+// Ticker timer3(printCountdown, 1000, 5);
+// Ticker timer4(blink, 500);
+// Ticker timer5(printCountUS, 100, 0, MICROS_MICROS);
+
+//global variables; preceded by g_
+unsigned int g_numbersequences;
+int g_seq_n, g_step_n, g_time_scale = 1;    //global seq and step
+
 
 
 int parse_exec_seq(int seq_Num, int seq_step_num ){    //TODO fix this.  Needs to load Seq up with RED/IR
@@ -30,6 +40,7 @@ If end of sequennce, exits with OX00.  No color means end
 
   char tst_chr;
   int retval=-1;
+  if (seq_step_num ==0) return seq_step_num;     //first call is -1; second is >0
 	string my_str = seqList[seq_Num].seqdetail;
   my_str.erase(remove(my_str.begin(), my_str.end(),' '),my_str.end());    //removes extra spaces.
   vector<string> seq_cmd;
@@ -120,11 +131,10 @@ while (retval<0) {  //TODO figure out return here.
                                  
 }    
 
-long int LEDout(void){
-  
-}
+
 
 void out_p_ret(void){   //debug utility to output details
+
 cout <<"Step summary:";
 if (p_ret.is_blink) cout << "\tBlink: YES";
 if (!p_ret.is_blink) cout << "\tBlink: NO";
@@ -147,6 +157,8 @@ else  {
         }
     
 }
+
+
 
 void init_default_profile() {
     //initialize profiles to defaults
@@ -332,7 +344,7 @@ seqList[seq].seqname = "empty";
 seqList[seq].seqdetail = "";
 seqList[seq].seqcomment = "empty";
 
-numbersequences = seq;
+g_numbersequences = seq;
 
 }
 

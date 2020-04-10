@@ -26,17 +26,6 @@
 This is an adaptation the squeezer project
 */
 #include <Arduino.h>
-// #include <iostream>
-// #include <vector>
-// #include <sstream>
-// #include <Ticker.h>
-// #include <cstring>
-// #include<string>
-
-// #include <BLEDevice.h>
-// #include <BLEServer.h>
-// #include <BLEUtils.h>
-// #include <BLE2902.h>
 
 using namespace std;
 
@@ -58,6 +47,8 @@ void setup_LED_io(void)
   pinMode (LED_out_pin, OUTPUT);
   ledcAttachPin(LED_out_pin, LEDChannel);
 
+  // task_parse.start();
+
 
 
   // ledcSetup(LEDChannel, LEDfreq, LEDres);
@@ -72,17 +63,25 @@ void setup_LED_io(void)
 
 char buffer[20];
 
+// Global variables preceded by g_
 extern SeqEntry seqList[NumSeqs];     //list of up to 20?
 extern Stage_Spec seq_step[2];    //[0] is RED; [1] is IR
-extern uint16_t numbersequences;
+extern uint16_t g_numbersequences;
 extern Parse_Return p_ret;
+extern int g_seq_n, g_step_n, g_time_scale;    //global seq and step
+
+std::string rxValue;
+
+// Ticker timer1(printMessage, 0, 1);
+Ticker task_parse(seq_exec, 1000, MILLIS);    //interval will be change
+// Ticker timer3(printCountdown, 1000, 5);
+// Ticker timer4(blink, 500);
+// Ticker timer5(printCountUS, 100, 0, MICROS_MICROS);
 
 
 BLECharacteristic *pCharacteristic;
 bool deviceConnected = false;
-//int txValue = 0;
-int fakeValue = 0;
-int scalerdg = 0;
+
 
 
 // See the following for generating UUIDs:
@@ -104,32 +103,25 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-      std::string rxValue = pCharacteristic->getValue();
+      // std::string rxValue = pCharacteristic->getValue();
+      rxValue = pCharacteristic->getValue();
 
       if (rxValue.length() > 0) {
-        Serial.println("*********");
-        Serial.print("Received Value: ");
-        Serial.println(rxValue.c_str());
-
-        for (int i = 0; i < rxValue.length(); i++) {
-          Serial.print(rxValue[i]);
-        }
-
-        Serial.println();  // just a CR; LF
-        //methinks all above can be done with printf. ???? abc
+        // cout<<"Receive: "<<rxValue.c_str()<<endl;
+        
 
         // Do stuff based on the command received from the app
         if (rxValue.find("A") != -1) { 
-          Serial.print("Turning ON!");
+          cout<<"Turning ON!  \n";
           // digitalWrite(ledPin, HIGH);
         }
         else if (rxValue.find("B") != -1) {
-          Serial.print("Turning OFF!");
+          cout<< ("Turning OFF!\n");
           // digitalWrite(ledPin, LOW);
         }
 
-        Serial.println();
-        Serial.println("*********");
+        // Serial.println();
+        // Serial.println("*********");
       }
     }
 };
@@ -138,14 +130,18 @@ void setup() {
   Serial.begin(115200);
   using namespace std;
   defSeq();   //this loads up the sequences
+
+  // task_parse.start();
  
   //seqList[0].seqnum
   Serial.println("Starting.......");
   pinMode (LED, OUTPUT);
 
-  
+  //on board led; testing
   ledcSetup(LEDChannel, LEDfreq, LEDres);
   ledcAttachPin(LED, LEDChannel);
+
+  // 
   
   
   // Create the BLE Device
@@ -182,60 +178,59 @@ void setup() {
   cout << ("Waiting a client connection to notify...") << endl;
 }
 
-void loop() {
-int seq_n = 0, step_n =0 ;    //debug, run through them all, see if blows up
-int nloops = numbersequences;
-nloops = 2;
+void LEDStart(int duty){
+//*****for testing with on board LED
+//rewrite for real deal--minor
+  ledcSetup(LEDChannel, p_ret.out_freq, LEDres);
+  ledcWrite(LEDChannel, duty);
+//     dacWrite(DAC1, id);
+//     delay(100);
 
-ledcWrite(LEDChannel, 102);
-while (1){
-  LEDfreq = 10;
-  for (int id = 0; id<=255; id++){
-    LEDfreq = 10 + id * 20; 
-    cout<< "freq: " << LEDfreq << " DAC = "<< id <<endl;
-    ledcSetup(LEDChannel, LEDfreq, LEDres);
-    ledcWrite(LEDChannel, 127);
-    dacWrite(DAC1, id);
-    delay(100);
-  }
 
 }
 
-for (seq_n = 1; seq_n< nloops; seq_n++){
-step_n = -1;    //fake out first time
-cout<<"time since start (ms) = " <<millis();
-cout <<"\tseq num ="<<seq_n<<"\tseq name: " << seqList[seq_n].seqname<<endl;
+void seq_exec () {
+//if called with g_stepn = 0, no active sequence; pause
+  
+   if ((g_step_n > 0)||(g_step_n ==-1)) g_step_n = parse_exec_seq(g_seq_n,g_step_n); // parse_exec_seq returns 0 if finished
+   if (g_step_n >0)
+   {
+     cout<<"g_step_n = "<<g_step_n<<"\t";
+     LEDStart(127);   //change the 127 to macro ??
+     out_p_ret(); //debug
+     task_parse.interval((p_ret.out_time*1000)/g_time_scale) ;
+     task_parse.start();
+    }
+    if (g_step_n == 0){   //just turned zero, not called if zero
+      task_parse.interval(1); // call back in 1 ms; see if anything to do (i.e g+tetp_n = -1)  
+      LEDStart(0); //zero percent; real world set also set DAC to zero????
+      // cout<<"g_step_n = "<<g_step_n<<"\t";
+    }                                    
+  
 
- while ((step_n >0)||(step_n < 0))    //step_n = -1 is first time, set to zero in parse_exec_seq
- {
-  // cout<<"\ntime since start (ms) = " <<millis();
-  // cout <<"\tsequence num ="<<seq_n<<"seq name" << seqList[seq_n].seqname<<endl;
-  step_n = parse_exec_seq(seq_n,step_n); //returns 0 if finished
-  out_p_ret();
-  delay(p_ret.out_time*100);
- }
+
+}
+
+void loop() {
+
+
+ledcWrite(LEDChannel, 102);
+
+g_step_n = -1;    //fake out first time
+g_seq_n = 0;
+task_parse.start();
+while (g_step_n != 0) task_parse.update();
+cout<<"fell through"<<endl;
+while(1); //debug hang up
+
+// cout<<"time since start (ms) = " <<millis();
+// cout <<"\tseq num ="<<g_seq_n<<"\tseq name: " << seqList[g_seq_n].seqname<<endl;
+
  
-//  delay(5000);
-} //END DEBUG WHILE
- while (1);
-// delay(2000);
-
-//   }
-while(1);  //debug hang up
   
   if (deviceConnected) {
     
-    // scale.power_up();
-    //digitalWrite(ledPin, HIGH);
-    // scalerdg = (int)((scale.get_units(numSamples))*10);
-    //scale.power_down();
-    //digitalWrite(ledPin, LOW);
-    //itoa(scalerdg,txString,10);
 
-    
-//    pCharacteristic->setValue(&fakeValue, 1); // To send the integer value
-//    pCharacteristic->setValue("Hello!"); // Sending a test message
-    // pCharacteristic->setValue(txString);
     for (int i = 0; i <NumSeqs; i++) {
     pCharacteristic->setValue(seqList[i].seqname.c_str());
     pCharacteristic->notify(); // Send the value to the app!
@@ -247,14 +242,7 @@ while(1);  //debug hang up
     }
     cout<<"\n\ntime since start (ms) = " <<millis();
     cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n";
-    
         
-    // pCharacteristic->notify(); // Send the value to the app!
-    // Serial.print("*** Sent Value: ");
-    // Serial.print(txString);
-    // Serial.println(" ***");
-    // scalerdg++;
-    // delay(1000);
 
     // You can add the rxValue checks down here instead
     // if you set "rxValue" as a global var at the top!
@@ -269,5 +257,5 @@ while(1);  //debug hang up
 //      digitalWrite(LED, LOW);
 //    }
   }
-//  delay(1000);
+
 }

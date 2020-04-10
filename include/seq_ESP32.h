@@ -53,15 +53,18 @@ void defSeq(void);
 int parse_exec_seq(int step_no, int seq_step );   //returns new seq_step
 void out_p_ret(void);
 void init_default_profile();
+void seq_exec (void) ;
 
 int16_t  get_num (vector<string> seq, int i);  //
 int16_t  get_clr (vector<string> seq, int i);
 
 // uint16_t numbersequences;     // calculated
 
+
+
 enum colors{RED= 0, IR=1};  //because [] starts at zero.
 
-
+// Ticker task_parse(seq_exec, 1000, MILLIS);    //interval will be change
 
 struct Stage_Spec
 {
